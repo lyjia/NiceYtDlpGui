@@ -8,22 +8,58 @@
     <artifactId>NiceYtDlpGui</artifactId>
     <version>0.0</version>
 
+    <properties>
+        <maven.compiler.source>${java.specification.version}</maven.compiler.source>
+        <maven.compiler.target>${java.specification.version}</maven.compiler.target>
+        <native.maven.plugin.version>0.9.24</native.maven.plugin.version>
+        <flatlafVersion>3.2</flatlafVersion>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <imageName>NiceYtDlpGui</imageName>
+        <mainClass>us.lyjia.Main</mainClass>
+    </properties>
+
     <dependencies>
+
         <dependency>
             <groupId>org.graalvm.buildtools</groupId>
             <artifactId>native-maven-plugin</artifactId>
             <version>${native.maven.plugin.version}</version>
         </dependency>
-    </dependencies>
 
-    <properties>
-        <maven.compiler.source>${java.specification.version}</maven.compiler.source>
-        <maven.compiler.target>${java.specification.version}</maven.compiler.target>
-        <native.maven.plugin.version>0.9.24</native.maven.plugin.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <imageName>NiceYtDlpGui</imageName>
-        <mainClass>us.lyjia.Main</mainClass>
-    </properties>
+
+        <!-- GUI -->
+
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf</artifactId>
+            <version>${flatlafVersion}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf-intellij-themes</artifactId>
+            <version>${flatlafVersion}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf-extras</artifactId>
+            <version>${flatlafVersion}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf-swingx</artifactId>
+            <version>${flatlafVersion}</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>miglayout-swing</artifactId>
+            <groupId>com.miglayout</groupId>
+            <version>5.1</version>
+        </dependency>
+
+    </dependencies>
 
     <build>
         <plugins>
