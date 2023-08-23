@@ -1,8 +1,7 @@
-package us.lyjia;
+package us.lyjia.NiceYtDlpGui;
 import com.formdev.flatlaf.FlatLightLaf;
-import us.lyjia.windows.MainWindow;
+import us.lyjia.NiceYtDlpGui.windows.MainWindow;
 
-import java.io.*;
 import javax.swing.*;
 
 public class Main {

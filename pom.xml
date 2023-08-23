@@ -15,7 +15,7 @@
         <flatlafVersion>3.2</flatlafVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <imageName>NiceYtDlpGui</imageName>
-        <mainClass>us.lyjia.Main</mainClass>
+        <mainClass>us.lyjia.NiceYtDlpGui.Main</mainClass>
     </properties>
 
     <dependencies>
@@ -57,6 +57,13 @@
             <artifactId>miglayout-swing</artifactId>
             <groupId>com.miglayout</groupId>
             <version>5.1</version>
+        </dependency>
+
+        <!-- async/await -->
+        <dependency>
+            <groupId>com.ea.async</groupId>
+            <artifactId>ea-async</artifactId>
+            <version>1.2.3</version>
         </dependency>
 
     </dependencies>
