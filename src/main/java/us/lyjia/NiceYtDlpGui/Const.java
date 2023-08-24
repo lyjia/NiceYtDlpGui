@@ -13,5 +13,20 @@ public class Const {
     public static final String YTDLP_VERSION_FORMAT = "\\d{4}\\.\\d{2}\\.\\d{2}";
   }
   
+  public class Progress {
+    public static final String TOKE_SEPERATOR = "|";
+
+    public static final String TOKE_HEADER = "NiCeGuI";
+
+    public static final String TOKE_INFO_ID = "infoId";
+    public static final String TOKE_INFO_TITLE = "infoTitle";
+    public static final String TOKE_INFO_EXTRACTOR = "infoExtractor";
+    public static final String TOKE_INFO_DOMAIN = "infoWebUrlDomain";
+    public static final String TOKE_PRG_STATUS = "progStatus";
+    public static final String TOKE_PRG_BYTES_DOWNLOADED = "progBytesDownloaded";
+    public static final String TOKE_PRG_BYTES_TOTAL = "progBytesTotal";
+    public static final String TOKE_PRG_BYTES_ETA = "progEta";
+    public static final String TOKE_PRG_BYTES_SPEED = "progSpeed";
+  }
   
 }

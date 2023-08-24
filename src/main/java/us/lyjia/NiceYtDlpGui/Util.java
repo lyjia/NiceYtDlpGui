@@ -1,9 +1,8 @@
 package us.lyjia.NiceYtDlpGui;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import javax.swing.*;
+import java.awt.*;
+import java.io.*;
 
 public class Util {
   
@@ -19,4 +18,16 @@ public class Util {
           return result.toString();
       }
   }
+  
+  public static File popupFolderPicker(String path, Component parent) {
+    final JFileChooser fc = new JFileChooser();
+    fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    int returnVal = fc.showOpenDialog(parent);
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
+      return fc.getSelectedFile();
+    } else {
+      return null;
+    }
+  }
+  
 }
