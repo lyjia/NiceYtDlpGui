@@ -32,11 +32,17 @@ public class MainWindow {
     String[] windowSize = prefs.get(Const.Prefs.MAINWINDOW_SIZE, "400x400").split("x");
     
     setUpWindow(parseInt(windowPos[0]), parseInt(windowPos[1]), parseInt(windowSize[0]), parseInt(windowSize[1]));
+    initYtDlpInstance();
     
+  }
+  
+  // Init the YT-DLP object
+  // https://stackabuse.com/how-to-use-threads-in-java-swing/
+  public void initYtDlpInstance() {
     var worker = new SwingWorker<YtDlp, Void>() {
       
       @Override
-      protected YtDlp doInBackground() throws IOException, InterruptedException, ProcessFailureException {
+      protected YtDlp doInBackground() throws Exception {
         return YtDlp.createInstanceAndVerify(Preferences.userNodeForPackage(MainWindow.class).get(Const.Prefs.YTDLP_PATH, Const.Prefs.YTDLP_PATH_DEFAULT));
       }
       
@@ -45,9 +51,10 @@ public class MainWindow {
         try {
           ytdlp = get();
         } catch (InterruptedException e) {
-          throw new RuntimeException(e);
+          
+          lblStatus.setText("ERROR loading yt-dlp!");
         } catch (ExecutionException e) {
-          throw new RuntimeException(e);
+          lblStatus.setText("ERROR loading yt-dlp!");
         }
         lblStatus.setText("yt-dlp v" + ytdlp.binVersion);
         setEnabledOnYtDlpActions(true);
@@ -56,9 +63,7 @@ public class MainWindow {
     };
     
     worker.execute();
-    
-  };
-  
+  }
   
   public void setUpWindow(int x, int y, int width, int height) {
     Dimension windowSize = new Dimension(width, height);
