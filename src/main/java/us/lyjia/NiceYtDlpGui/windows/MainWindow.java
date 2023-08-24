@@ -10,6 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 import java.util.prefs.*;
 
 import static java.lang.Integer.parseInt;
@@ -32,19 +33,32 @@ public class MainWindow {
     
     setUpWindow(parseInt(windowPos[0]), parseInt(windowPos[1]), parseInt(windowSize[0]), parseInt(windowSize[1]));
     
-    try {
-      ytdlp = YtDlp.createInstanceAndVerify(Preferences.userNodeForPackage(MainWindow.class).get(Const.Prefs.YTDLP_PATH, Const.Prefs.YTDLP_PATH_DEFAULT));
-      lblStatus.setText("yt-dlp v" + ytdlp.binVersion);
-      setEnabledOnYtDlpActions(true);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
-    } catch (ProcessFailureException e) {
-      throw new RuntimeException(e);
-    }
+    var worker = new SwingWorker<YtDlp, Void>() {
+      
+      @Override
+      protected YtDlp doInBackground() throws IOException, InterruptedException, ProcessFailureException {
+        return YtDlp.createInstanceAndVerify(Preferences.userNodeForPackage(MainWindow.class).get(Const.Prefs.YTDLP_PATH, Const.Prefs.YTDLP_PATH_DEFAULT));
+      }
+      
+      @Override
+      public void done() {
+        try {
+          ytdlp = get();
+        } catch (InterruptedException e) {
+          throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+          throw new RuntimeException(e);
+        }
+        lblStatus.setText("yt-dlp v" + ytdlp.binVersion);
+        setEnabledOnYtDlpActions(true);
+        
+      }
+    };
     
-  }
+    worker.execute();
+    
+  };
+  
   
   public void setUpWindow(int x, int y, int width, int height) {
     Dimension windowSize = new Dimension(width, height);
@@ -52,7 +66,6 @@ public class MainWindow {
     // build the GUI
     JFrame frame = new JFrame("NiceYtDlpGUI");
     JPanel panel = new JPanel(new MigLayout("fillx", "[right][grow,fill][right][right]"));
-    
     
     // 'Enter URL label'
     JLabel lblUrl = new JLabel();
@@ -76,7 +89,7 @@ public class MainWindow {
     panel.add(btnBrowse, "wrap");
     
     // Button bar
-    lblStatus = new JLabel("[VERSION][STATUS]");
+    lblStatus = new JLabel("Loading...");
     
     JButton btnSettings = new JButton();
     btnSettings.setText("Settings...");
@@ -108,5 +121,5 @@ public class MainWindow {
       txtDest.setText(ret.toString());
     }
   }
-
+  
 }

@@ -14,6 +14,8 @@ import java.util.regex.Pattern;
 
 import us.lyjia.NiceYtDlpGui.Util;
 
+import javax.swing.*;
+
 
 public class YtDlp {
   Logger log = Logger.getLogger(this.getClass().getName());
@@ -35,7 +37,6 @@ public class YtDlp {
   }
   
   public static YtDlp createInstanceAndVerify(String path) throws IOException, InterruptedException, ProcessFailureException {
-    
     ProcessBuilder builder = new ProcessBuilder(path, "--version");
     builder.redirectErrorStream(true);
     
