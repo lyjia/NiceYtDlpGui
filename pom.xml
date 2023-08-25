@@ -6,12 +6,12 @@
 
     <groupId>us.lyjia</groupId>
     <artifactId>NiceYtDlpGui</artifactId>
-    <version>0.0</version>
+    <version>0.1</version>
 
     <properties>
         <maven.compiler.source>${java.specification.version}</maven.compiler.source>
         <maven.compiler.target>${java.specification.version}</maven.compiler.target>
-        <native.maven.plugin.version>0.9.24</native.maven.plugin.version>
+        <native.maven.plugin.version>0.9.12</native.maven.plugin.version>
         <flatlafVersion>3.2</flatlafVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <imageName>NiceYtDlpGui</imageName>
@@ -60,16 +60,33 @@
         </dependency>
 
         <!-- async/await -->
-        <dependency>
-            <groupId>com.ea.async</groupId>
-            <artifactId>ea-async</artifactId>
-            <version>1.2.3</version>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>com.ea.async</groupId>-->
+        <!--            <artifactId>ea-async</artifactId>-->
+        <!--            <version>1.2.3</version>-->
+        <!--        </dependency>-->
 
     </dependencies>
 
     <build>
         <plugins>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>java</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>${mainClass}</mainClass>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
 
             <plugin>
@@ -129,6 +146,8 @@
             <id>native</id>
             <build>
                 <plugins>
+
+                    <!-- graalvm build tools -->
                     <plugin>
                         <groupId>org.graalvm.buildtools</groupId>
                         <artifactId>native-maven-plugin</artifactId>
@@ -163,6 +182,42 @@
                             </agent>
                         </configuration>
                     </plugin>
+
+                    <!-- something about using the application agent in a mojo execution? -->
+                    <!-- idunno its what the tutorial said to do -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.0.0</version>
+                        <executions>
+                            <execution>
+                                <id>java-agent</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>java</executable>
+                                    <workingDirectory>${project.build.directory}</workingDirectory>
+                                    <arguments>
+                                        <argument>-classpath</argument>
+                                        <classpath/>
+                                        <argument>${mainClass}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>native</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>${project.build.directory}/${imageName}</executable>
+                                    <workingDirectory>${project.build.directory}</workingDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
                 </plugins>
             </build>
         </profile>

@@ -9,17 +9,24 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.logging.Logger;
 
 public class Download {
   public enum Status {Init, Loading, Running, Finished, Error}
   Logger log = Logger.getLogger(this.getClass().getName());
   
-  public Status status = Status.Init;
-  
   private URL url;
   private File destFolder;
   private YtDlp ytDlp;
+  
+  // download attributes
+  public Status status = Status.Init;
+  public LinkedHashMap<String, String> progressStats = new LinkedHashMap<>();
+  
+  // the master list of running downloads
+  public static ArrayList<Download> downloadPile;
   
   // https://www.baeldung.com/java-observer-pattern
   private PropertyChangeSupport support;
@@ -29,9 +36,14 @@ public class Download {
     this.url = url;
     this.destFolder = destFolder;
     this.ytDlp = ytdlp_instance;
+    
+    var keys = ytDlp.getProgressTemplateKeys();
+    for (var key : keys) {
+      progressStats.put(key, null);
+    }
   }
   
-  public void start() {
+  private void start() {
     status = Status.Loading;
     
     String[] args = {
@@ -61,7 +73,7 @@ public class Download {
         String line;
         
         while ((line = in.readLine()) != null) {
-          System.out.println(line);
+          parseReadlineFromProcess(line);
         }
         
         int exitCode = process.waitFor();
@@ -79,7 +91,20 @@ public class Download {
     
   }
   
+  public void parseReadlineFromProcess(String line) {
+    System.out.println(line);
+  }
+  
+  public static void addDownloadToPileAndStart(Download download) {
+    downloadPile.add(download);
+    download.start();
+  }
+  
   public void addChangeListener(PropertyChangeListener pcl) {
     support.addPropertyChangeListener(pcl);
+  }
+  
+  public String getProgressStat(String keyname) {
+    return progressStats.get(keyname);
   }
 }

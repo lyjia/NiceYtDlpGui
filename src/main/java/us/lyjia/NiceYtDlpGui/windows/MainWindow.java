@@ -2,14 +2,13 @@ package us.lyjia.NiceYtDlpGui.windows;
 
 import net.miginfocom.swing.MigLayout;
 import us.lyjia.NiceYtDlpGui.Const;
-import us.lyjia.NiceYtDlpGui.exceptions.ProcessFailureException;
+import us.lyjia.NiceYtDlpGui.models.Download;
 import us.lyjia.NiceYtDlpGui.models.YtDlp;
 import us.lyjia.NiceYtDlpGui.Util;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
@@ -28,6 +27,7 @@ public class MainWindow {
   JButton btnGo;
   JTextField txtDest;
   JTextField txtUrl;
+  JTable tblDownloads;
   
   
   public MainWindow() {
@@ -112,7 +112,15 @@ public class MainWindow {
     
     panel.add(lblStatus, "span 2, grow");
     panel.add(btnSettings);
-    panel.add(btnGo);
+    panel.add(btnGo, "wrap");
+    
+    // Downloads table
+    // https://docs.oracle.com/javase/tutorial/uiswing/components/table.html
+    tblDownloads = new JTable();
+    JScrollPane scrlDownloads = new JScrollPane(tblDownloads);
+    tblDownloads.setFillsViewportHeight(true);
+    
+    panel.add(scrlDownloads, "span 4, grow");
     
     // build the window
     frame.add(panel);
@@ -149,7 +157,7 @@ public class MainWindow {
       // set up progress monitoring
       
       // start the download
-      download.start();
+      Download.addDownloadToPileAndStart(download);
       
       // since everything was successful save the path so it is recalled next time
       prefs.put(Const.Prefs.LAST_DEST, destStr);

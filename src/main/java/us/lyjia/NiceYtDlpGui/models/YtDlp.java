@@ -1,6 +1,7 @@
 package us.lyjia.NiceYtDlpGui.models;
 
 import us.lyjia.NiceYtDlpGui.Const;
+import us.lyjia.NiceYtDlpGui.Tweakables;
 import us.lyjia.NiceYtDlpGui.exceptions.ProcessFailureException;
 
 import java.io.File;
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import java.util.prefs.*;
@@ -32,25 +34,9 @@ public class YtDlp {
     //this(Preferences.userNodeForPackage(MainWindow.class).get(Const.PREF_YTDLP_PATH, Const.PREF_YTDLP_PATH_DEFAULT));
     binPath = path;
     binVersion = version;
-    downloadProgressTemplateMap = initDownloadProgressTemplateMap();
+    downloadProgressTemplateMap = Tweakables.initDownloadProgressTemplateMap();
     
     log.info("yt-dlp initialized. Version " + binVersion + " at " + binPath);
-    
-  }
-  
-  private Map<String, String> initDownloadProgressTemplateMap() {
-    downloadProgressTemplateMap = new LinkedHashMap<>();
-    downloadProgressTemplateMap.put(Const.Progress.TOKE_PRG_STATUS, "%(progress.status)s");
-    downloadProgressTemplateMap.put(Const.Progress.TOKE_INFO_EXTRACTOR, "%(info.extractor)s");
-    downloadProgressTemplateMap.put(Const.Progress.TOKE_PRG_BYTES_DOWNLOADED, "%(progress.downloaded_bytes)s");
-    downloadProgressTemplateMap.put(Const.Progress.TOKE_PRG_BYTES_TOTAL, "%(progress.total_bytes)s");
-    downloadProgressTemplateMap.put(Const.Progress.TOKE_PRG_BYTES_ETA, "%(progress.eta)s");
-    downloadProgressTemplateMap.put(Const.Progress.TOKE_PRG_BYTES_SPEED, "%(progress.speed)s");
-    downloadProgressTemplateMap.put(Const.Progress.TOKE_INFO_ID, "%(info.id)s");
-    downloadProgressTemplateMap.put(Const.Progress.TOKE_INFO_DOMAIN, "%(info.webpage_url_domain)s");
-    downloadProgressTemplateMap.put(Const.Progress.TOKE_INFO_TITLE, "%(info.title)s");
-    
-    return downloadProgressTemplateMap;
     
   }
   
@@ -83,6 +69,10 @@ public class YtDlp {
     ProcessBuilder builder = new ProcessBuilder(cmd);
     return builder;
     
+  }
+  
+  public String[] getProgressTemplateKeys() {
+   return downloadProgressTemplateMap.keySet().toArray(new String[0]);
   }
   
 
