@@ -21,6 +21,7 @@ To build native executable:
 
 * Solution unknown.
 * Relevant github issues:
+* * https://github.com/lyjia/NiceYtDlpGui/issues/1
   * https://github.com/oracle/graal/issues/3659 [native-image] Swing application cannot be compiled on Windows
   * https://github.com/oracle/graal/issues/1812 [native-image] java.home property not set
 
