@@ -5,6 +5,7 @@ import us.lyjia.NiceYtDlpGui.Const;
 import us.lyjia.NiceYtDlpGui.models.Download;
 import us.lyjia.NiceYtDlpGui.models.YtDlp;
 import us.lyjia.NiceYtDlpGui.Util;
+import us.lyjia.NiceYtDlpGui.models.swing.DownloadsTableModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -116,8 +117,8 @@ public class MainWindow {
     
     // Downloads table
     // https://docs.oracle.com/javase/tutorial/uiswing/components/table.html
-    tblDownloads = new JTable();
-    JScrollPane scrlDownloads = new JScrollPane(tblDownloads);
+    tblDownloads = new JTable(new DownloadsTableModel(Download.getDownloadPile()));
+    JScrollPane scrlDownloads = new JScrollPane();
     tblDownloads.setFillsViewportHeight(true);
     
     panel.add(scrlDownloads, "span 4, grow");

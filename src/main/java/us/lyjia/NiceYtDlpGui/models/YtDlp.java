@@ -28,13 +28,12 @@ public class YtDlp {
   public String binVersion;
   
   public Preferences prefs = Preferences.userNodeForPackage(this.getClass());
-  Map<String, String> downloadProgressTemplateMap;
+  static Map<String, String> downloadProgressTemplateMap = Tweakables.initDownloadProgressTemplateMap();
   
   private YtDlp(String path, String version) {
     //this(Preferences.userNodeForPackage(MainWindow.class).get(Const.PREF_YTDLP_PATH, Const.PREF_YTDLP_PATH_DEFAULT));
     binPath = path;
     binVersion = version;
-    downloadProgressTemplateMap = Tweakables.initDownloadProgressTemplateMap();
     
     log.info("yt-dlp initialized. Version " + binVersion + " at " + binPath);
     
@@ -71,7 +70,7 @@ public class YtDlp {
     
   }
   
-  public String[] getProgressTemplateKeys() {
+  public static String[] getProgressTemplateKeys() {
    return downloadProgressTemplateMap.keySet().toArray(new String[0]);
   }
   

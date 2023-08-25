@@ -11,9 +11,9 @@ public class DownloadsTableModel extends AbstractTableModel {
   ArrayList<Download> downloadPile;
   String[] keys;
   
-  public DownloadsTableModel(ArrayList<Download> downloads, YtDlp ytdlp) {
+  public DownloadsTableModel(ArrayList<Download> downloads) {
     downloadPile = downloads;
-    keys = ytdlp.getProgressTemplateKeys();
+    keys = YtDlp.getProgressTemplateKeys();
   }
   
   @Override

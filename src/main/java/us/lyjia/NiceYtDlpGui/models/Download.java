@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 
 public class Download {
   public enum Status {Init, Loading, Running, Finished, Error}
+  
   Logger log = Logger.getLogger(this.getClass().getName());
   
   private URL url;
@@ -26,7 +27,7 @@ public class Download {
   public LinkedHashMap<String, String> progressStats = new LinkedHashMap<>();
   
   // the master list of running downloads
-  public static ArrayList<Download> downloadPile;
+  private static ArrayList<Download> downloadPile;
   
   // https://www.baeldung.com/java-observer-pattern
   private PropertyChangeSupport support;
@@ -37,11 +38,21 @@ public class Download {
     this.destFolder = destFolder;
     this.ytDlp = ytdlp_instance;
     
-    var keys = ytDlp.getProgressTemplateKeys();
+    var keys = YtDlp.getProgressTemplateKeys();
     for (var key : keys) {
       progressStats.put(key, null);
     }
   }
+  
+  public static void addDownloadToPileAndStart(Download download) {
+    downloadPile.add(download);
+    download.start();
+  }
+  
+  public static ArrayList<Download> getDownloadPile() {
+    return downloadPile;
+  }
+  
   
   private void start() {
     status = Status.Loading;
@@ -57,14 +68,14 @@ public class Download {
         Util.encloseWithQuotes(this.url.toString())
     };
     
-    log.info("About to spawn ytdlp with: "+String.join(" ", args));
+    log.info("About to spawn ytdlp with: " + String.join(" ", args));
     
     // spawn a new thread and run+monitor the ytdlp process from within it
     new Thread(() -> {
       
       ProcessBuilder builder = ytDlp.getProcessBuilder(args);
       Process process = null;
-
+      
       try {
         builder.redirectErrorStream(true);
         process = builder.start();
@@ -79,7 +90,7 @@ public class Download {
         int exitCode = process.waitFor();
         in.close();
         
-        log.info("Process exited with code "+exitCode);
+        log.info("Process exited with code " + exitCode);
         
       } catch (IOException e) {
         throw new RuntimeException(e);
@@ -95,11 +106,6 @@ public class Download {
     System.out.println(line);
   }
   
-  public static void addDownloadToPileAndStart(Download download) {
-    downloadPile.add(download);
-    download.start();
-  }
-  
   public void addChangeListener(PropertyChangeListener pcl) {
     support.addPropertyChangeListener(pcl);
   }
@@ -107,4 +113,5 @@ public class Download {
   public String getProgressStat(String keyname) {
     return progressStats.get(keyname);
   }
+  
 }
