@@ -42,8 +42,9 @@ public class MainWindow {
   }
   
   // Init the YT-DLP object
-  // https://stackabuse.com/how-to-use-threads-in-java-swing/
+  
   public void initYtDlpInstance() {
+    // https://stackabuse.com/how-to-use-threads-in-java-swing/
     var worker = new SwingWorker<YtDlp, Void>() {
       
       @Override
@@ -118,7 +119,7 @@ public class MainWindow {
     // Downloads table
     // https://docs.oracle.com/javase/tutorial/uiswing/components/table.html
     tblDownloads = new JTable(new DownloadsTableModel(Download.getDownloadPile()));
-    JScrollPane scrlDownloads = new JScrollPane();
+    JScrollPane scrlDownloads = new JScrollPane(tblDownloads);
     tblDownloads.setFillsViewportHeight(true);
     
     panel.add(scrlDownloads, "span 4, grow");
@@ -147,8 +148,6 @@ public class MainWindow {
     try {
       var destStr = txtDest.getText();
       var urlStr = txtUrl.getText();
-      
-      log.info("Download requested: save "+urlStr+" to "+destStr);
       
       // create download object
       URL url = new URL( urlStr );

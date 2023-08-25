@@ -3,6 +3,7 @@ package us.lyjia.NiceYtDlpGui.models;
 import us.lyjia.NiceYtDlpGui.Const;
 import us.lyjia.NiceYtDlpGui.Util;
 
+import javax.swing.*;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.BufferedReader;
@@ -15,9 +16,15 @@ import java.util.LinkedHashMap;
 import java.util.logging.Logger;
 
 public class Download {
+  Logger log = Logger.getLogger(this.getClass().getName());
+  
   public enum Status {Init, Loading, Running, Finished, Error}
   
-  Logger log = Logger.getLogger(this.getClass().getName());
+  // the master list of running downloads
+  private static ArrayList<Download> downloadPile = new ArrayList<>();
+  private static int serial = 0;
+  
+  private final int id;
   
   private final URL url;
   private final File destFolder;
@@ -28,9 +35,6 @@ public class Download {
   public Status status = Status.Init;
   public LinkedHashMap<String, String> progressStats = new LinkedHashMap<>();
   
-  // the master list of running downloads
-  private static ArrayList<Download> downloadPile = new ArrayList<>();
-  
   // https://www.baeldung.com/java-observer-pattern
   private PropertyChangeSupport changeSupport;
   
@@ -40,6 +44,9 @@ public class Download {
     this.destFolder = destFolder;
     this.ytDlp = ytdlp_instance;
     this.changeSupport = new PropertyChangeSupport(this);
+    this.id = ++serial;
+    
+    log.info("Download "+id+" starting: going to save "+url+" to "+destFolder);
     
     progressKeys = YtDlp.getProgressTemplateKeys();
     for (var key : progressKeys) {
@@ -70,7 +77,7 @@ public class Download {
         Util.encloseWithQuotes(this.url.toString())
     };
     
-    log.info("About to spawn ytdlp with: " + String.join(" ", args));
+    log.fine("Download "+id+" about to spawn ytdlp with: " + String.join(" ", args));
     
     // spawn a new thread and run+monitor the ytdlp process from within it
     new Thread(() -> {
@@ -86,13 +93,17 @@ public class Download {
         String line;
         
         while ((line = in.readLine()) != null) {
-          parseReadlineFromProcess(line);
+          String finalLine = line;
+          SwingUtilities.invokeLater(() -> {
+            parseReadlineFromProcess(finalLine);
+          });
+          
         }
         
         int exitCode = process.waitFor();
         in.close();
         
-        log.info("Process exited with code " + exitCode);
+        log.info("Download "+id+" process exited with code " + exitCode);
         
       } catch (IOException e) {
         throw new RuntimeException(e);
