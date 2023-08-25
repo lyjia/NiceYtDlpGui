@@ -31,7 +31,6 @@ public class DownloadsTableModel extends AbstractTableModel {
   
   @Override
   public Object getValueAt(int rowIndex, int columnIndex) {
-    // +1 because the first token is the validation string
-    return downloadPile.get(rowIndex).getProgressStat( keys[columnIndex]+1 );
+    return downloadPile.get(rowIndex).getProgressStat( keys[columnIndex] );
   }
 }

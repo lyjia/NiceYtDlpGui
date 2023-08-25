@@ -118,7 +118,8 @@ public class Download {
   private void parseReadlineFromProcess(String line) {
     String[] progressArr = line.split(Const.Progress.TOKE_SEPERATOR);
     for (var i = 0; i < progressKeys.length; i++) {
-      progressStats.put(progressKeys[i], progressArr[i]);
+      // +1 because the first token is the validation string
+      progressStats.put(progressKeys[i], progressArr[i+1]);
     }
     changeSupport.firePropertyChange("progressStats", null, null);
   }
