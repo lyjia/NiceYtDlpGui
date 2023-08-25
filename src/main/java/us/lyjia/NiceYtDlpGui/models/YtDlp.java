@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 import java.util.prefs.*;
@@ -38,7 +39,7 @@ public class YtDlp {
   }
   
   private Map<String, String> initDownloadProgressTemplateMap() {
-    downloadProgressTemplateMap = new HashMap<>();
+    downloadProgressTemplateMap = new LinkedHashMap<>();
     downloadProgressTemplateMap.put(Const.Progress.TOKE_PRG_STATUS, "%(progress.status)s");
     downloadProgressTemplateMap.put(Const.Progress.TOKE_INFO_EXTRACTOR, "%(info.extractor)s");
     downloadProgressTemplateMap.put(Const.Progress.TOKE_PRG_BYTES_DOWNLOADED, "%(progress.downloaded_bytes)s");
@@ -88,7 +89,6 @@ public class YtDlp {
   
   public String getDownloadProgressTemplateAsArgString() {
     return Util.encloseWithQuotes("download:" +
-        Const.Progress.TOKE_SEPERATOR +
         Const.Progress.TOKE_HEADER +
         Const.Progress.TOKE_SEPERATOR +
         String.join(Const.Progress.TOKE_SEPERATOR, downloadProgressTemplateMap.values()));

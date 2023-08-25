@@ -18,7 +18,7 @@ public class Const {
   }
   
   public class Progress {
-    public static final String TOKE_SEPERATOR = "☺";
+    public static final String TOKE_SEPERATOR = "\t";
 
     public static final String TOKE_HEADER = "NiCeGuI";
 
