@@ -7,6 +7,10 @@ public class Const {
     public static final String MAINWINDOW_SIZE = "size";
     public static final String YTDLP_PATH = "path";
     public static final String YTDLP_PATH_DEFAULT = "g:\\programs.portable\\PATH\\yt-dlp.exe";
+    
+    public static final String LAST_DEST = "last dest";
+    public static final String LAST_URL = "last url";
+    
   }
   
   public class Regex {
@@ -14,7 +18,7 @@ public class Const {
   }
   
   public class Progress {
-    public static final String TOKE_SEPERATOR = "|";
+    public static final String TOKE_SEPERATOR = "☺";
 
     public static final String TOKE_HEADER = "NiCeGuI";
 

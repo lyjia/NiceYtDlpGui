@@ -30,4 +30,19 @@ public class Util {
     }
   }
   
+  public static String encloseWithQuotes(String str) {
+    return "\""+str+"\"";
+  }
+  
+  public class Array {
+    public static String[] crappyUnshift(String[] arr, String toAdd) {
+      String[] toret = new String[arr.length + 1];
+      toret[0] = toAdd;
+      for (var i = 0; i < arr.length; i++) {
+        toret[i+1] = arr[i];
+      }
+      return toret;
+    }
+  }
+  
 }

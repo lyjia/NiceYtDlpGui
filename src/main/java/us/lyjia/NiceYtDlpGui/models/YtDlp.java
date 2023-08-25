@@ -39,15 +39,16 @@ public class YtDlp {
   
   private Map<String, String> initDownloadProgressTemplateMap() {
     downloadProgressTemplateMap = new HashMap<>();
-    downloadProgressTemplateMap.put(Const.Progress.TOKE_INFO_ID, "%(info.id)s");
-    downloadProgressTemplateMap.put(Const.Progress.TOKE_INFO_TITLE, "%(info.title)s");
-    downloadProgressTemplateMap.put(Const.Progress.TOKE_INFO_EXTRACTOR, "%(info.extractor)s");
-    downloadProgressTemplateMap.put(Const.Progress.TOKE_INFO_DOMAIN, "%(info.webpage_url_domain)s");
     downloadProgressTemplateMap.put(Const.Progress.TOKE_PRG_STATUS, "%(progress.status)s");
+    downloadProgressTemplateMap.put(Const.Progress.TOKE_INFO_EXTRACTOR, "%(info.extractor)s");
     downloadProgressTemplateMap.put(Const.Progress.TOKE_PRG_BYTES_DOWNLOADED, "%(progress.downloaded_bytes)s");
     downloadProgressTemplateMap.put(Const.Progress.TOKE_PRG_BYTES_TOTAL, "%(progress.total_bytes)s");
     downloadProgressTemplateMap.put(Const.Progress.TOKE_PRG_BYTES_ETA, "%(progress.eta)s");
     downloadProgressTemplateMap.put(Const.Progress.TOKE_PRG_BYTES_SPEED, "%(progress.speed)s");
+    downloadProgressTemplateMap.put(Const.Progress.TOKE_INFO_ID, "%(info.id)s");
+    downloadProgressTemplateMap.put(Const.Progress.TOKE_INFO_DOMAIN, "%(info.webpage_url_domain)s");
+    downloadProgressTemplateMap.put(Const.Progress.TOKE_INFO_TITLE, "%(info.title)s");
+    
     return downloadProgressTemplateMap;
     
   }
@@ -77,22 +78,23 @@ public class YtDlp {
   }
   
   public ProcessBuilder getProcessBuilder(String[] args) {
-    String argsStr = String.join(" ", args);
-    ProcessBuilder builder = new ProcessBuilder(binPath, argsStr);
+    var cmd = Util.Array.crappyUnshift(args, binPath);
+    ProcessBuilder builder = new ProcessBuilder(cmd);
     return builder;
+    
   }
   
 
   
   public String getDownloadProgressTemplateAsArgString() {
-    return "--progress-template \"download:" +
+    return Util.encloseWithQuotes("download:" +
         Const.Progress.TOKE_SEPERATOR +
         Const.Progress.TOKE_HEADER +
         Const.Progress.TOKE_SEPERATOR +
-        String.join(Const.Progress.TOKE_SEPERATOR, downloadProgressTemplateMap.values());
+        String.join(Const.Progress.TOKE_SEPERATOR, downloadProgressTemplateMap.values()));
   }
   
-  public Download startYtDlpDownload(URL url, File destFolder) {
+  public Download getDownloadObj(URL url, File destFolder) {
     return new Download(this, url, destFolder);
   }
   

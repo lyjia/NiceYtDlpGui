@@ -10,12 +10,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Logger;
 import java.util.prefs.*;
 
 import static java.lang.Integer.parseInt;
 
 public class MainWindow {
+  Logger log = Logger.getLogger(this.getClass().getName());
   YtDlp ytdlp;
   
   Preferences prefs = Preferences.userNodeForPackage(this.getClass());
@@ -76,6 +80,7 @@ public class MainWindow {
     JLabel lblUrl = new JLabel();
     lblUrl.setText("Enter a URL:");
     txtUrl = new JTextField();
+    txtUrl.setText( prefs.get(Const.Prefs.LAST_URL, "") );
     
     panel.add(lblUrl);
     panel.add(txtUrl, "wrap, span 3, grow");
@@ -84,6 +89,7 @@ public class MainWindow {
     JLabel lblDest = new JLabel();
     lblDest.setText("Save to:");
     txtDest = new JTextField();
+    txtDest.setText( prefs.get(Const.Prefs.LAST_DEST, "") );
     
     JButton btnBrowse = new JButton();
     btnBrowse.setText("Browse...");
@@ -102,6 +108,7 @@ public class MainWindow {
     btnGo = new JButton();
     btnGo.setText("Go!");
     btnGo.setEnabled(false);
+    btnGo.addActionListener(e -> btnGo_click());
     
     panel.add(lblStatus, "span 2, grow");
     panel.add(btnSettings);
@@ -124,6 +131,33 @@ public class MainWindow {
     var ret = Util.popupFolderPicker(txtDest.getText(), null);
     if (ret != null) {
       txtDest.setText(ret.toString());
+    }
+  }
+  
+  public void btnGo_click() {
+    try {
+      var destStr = txtDest.getText();
+      var urlStr = txtUrl.getText();
+      
+      log.info("Download requested: save "+urlStr+" to "+destStr);
+      
+      // create download object
+      URL url = new URL( urlStr );
+      File destFolder = new File( destStr );
+      var download = ytdlp.getDownloadObj(url, destFolder);
+      
+      // set up progress monitoring
+      
+      // start the download
+      download.start();
+      
+      // since everything was successful save the path so it is recalled next time
+      prefs.put(Const.Prefs.LAST_DEST, destStr);
+      prefs.put(Const.Prefs.LAST_URL, urlStr);
+      
+    } catch (MalformedURLException e) {
+      throw new RuntimeException(e);
+      
     }
   }
   
