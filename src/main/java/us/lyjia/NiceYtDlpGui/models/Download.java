@@ -1,5 +1,6 @@
 package us.lyjia.NiceYtDlpGui.models;
 
+import us.lyjia.NiceYtDlpGui.Const;
 import us.lyjia.NiceYtDlpGui.Util;
 
 import java.beans.PropertyChangeListener;
@@ -18,28 +19,30 @@ public class Download {
   
   Logger log = Logger.getLogger(this.getClass().getName());
   
-  private URL url;
-  private File destFolder;
-  private YtDlp ytDlp;
+  private final URL url;
+  private final File destFolder;
+  private final YtDlp ytDlp;
+  private final String[] progressKeys;
   
   // download attributes
   public Status status = Status.Init;
   public LinkedHashMap<String, String> progressStats = new LinkedHashMap<>();
   
   // the master list of running downloads
-  private static ArrayList<Download> downloadPile;
+  private static ArrayList<Download> downloadPile = new ArrayList<>();
   
   // https://www.baeldung.com/java-observer-pattern
-  private PropertyChangeSupport support;
+  private PropertyChangeSupport changeSupport;
   
   
   public Download(YtDlp ytdlp_instance, URL url, File destFolder) {
     this.url = url;
     this.destFolder = destFolder;
     this.ytDlp = ytdlp_instance;
+    this.changeSupport = new PropertyChangeSupport(this);
     
-    var keys = YtDlp.getProgressTemplateKeys();
-    for (var key : keys) {
+    progressKeys = YtDlp.getProgressTemplateKeys();
+    for (var key : progressKeys) {
       progressStats.put(key, null);
     }
   }
@@ -63,8 +66,7 @@ public class Download {
         "--quiet",
         "--progress",
         "--force-overwrite",
-        "--progress-template",
-        ytDlp.getDownloadProgressTemplateAsArgString(),
+        "--progress-template", ytDlp.getDownloadProgressTemplateAsArgString(),
         Util.encloseWithQuotes(this.url.toString())
     };
     
@@ -97,17 +99,21 @@ public class Download {
       } catch (InterruptedException e) {
         throw new RuntimeException(e);
       }
+      
     }).start();
-    
     
   }
   
-  public void parseReadlineFromProcess(String line) {
-    System.out.println(line);
+  private void parseReadlineFromProcess(String line) {
+    String[] progressArr = line.split(Const.Progress.TOKE_SEPERATOR);
+    for (var i = 0; i < progressKeys.length; i++) {
+      progressStats.put(progressKeys[i], progressArr[i]);
+    }
+    changeSupport.firePropertyChange("progressStats", null, null);
   }
   
   public void addChangeListener(PropertyChangeListener pcl) {
-    support.addPropertyChangeListener(pcl);
+    changeSupport.addPropertyChangeListener(pcl);
   }
   
   public String getProgressStat(String keyname) {
