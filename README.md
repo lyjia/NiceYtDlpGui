@@ -5,28 +5,33 @@ A graphical frontend for yt_dlp by [Lyjia](http://www.lyjia.us)
 Built with GraalVM 20
 
 To build jars
+ * Make sure JDK 20 (or greater) and Maven are installed and in %PATH%
  * run `mvn package`
- * Execute `java -jar NiceYtDlpGui-0.1-jar-with-dependencies.jar` with a java runtime version 20 or higher
+ * Execute `java -jar NiceYtDlpGui-0.1-jar-with-dependencies.jar`
  * Do not try to run the jarfile directly or doubleclick it unless you have the correct JDK configured to handle this (uncommon)
 
-To build native executable:
- * run `mvn -P native package` (currently broken)
+To build native-image executable:
+ * Make sure graalVM 20 (or greater) and Maven are installed
+ * run `mvn -P native package`
  * Execute `NiceYtDlpGui` or `NiceYtDlpGui.exe` in `target`
 
 ## Known issues:
 
+### native-image throws exception java.lang.Error: no ComponentUI class for: javax.swing.[...]
 
+* Solution unknown.
 
 ### native-image throws exception in thread "main" java.lang.Error: java.home property not set
 
-* Solution unknown.
+* Certain dependencies need to be manually copied to the build folder since many parts of Swing require %JAVA_HOME% to be defined when it isn't (because of the standalone native-image executable)
 * Relevant github issues:
-* * https://github.com/lyjia/NiceYtDlpGui/issues/1
+  * https://github.com/lyjia/NiceYtDlpGui/issues/1
   * https://github.com/oracle/graal/issues/3659 [native-image] Swing application cannot be compiled on Windows
   * https://github.com/oracle/graal/issues/1812 [native-image] java.home property not set
 
 
 ### native-image throws exception in thread "main" java.lang.NoSuchMethodError: java.awt.Toolkit.getDefaultToolkit()Ljava/awt/Toolkit;
 
-* Run the JAR with the native agent to generate agent-output: ` mvn -P native -D agent exec:exec@java-agent`
+* This occurs because the native-image was built without graalVM's agent-output. This can happen if `target/` is deleted, `mvn clean`, or on a fresh checkout
+* Run the JAR with the native agent to generate agent-output, do stuff in it so the agent sees it: ` mvn -P native -D agent exec:exec@java-agent`
 * Recompile the native-image: `mvn -P native package`

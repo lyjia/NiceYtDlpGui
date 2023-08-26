@@ -11,6 +11,11 @@
     <properties>
         <maven.compiler.source>${java.specification.version}</maven.compiler.source>
         <maven.compiler.target>${java.specification.version}</maven.compiler.target>
+
+        <graalvm.groupId>org.graalvm.sdk</graalvm.groupId>
+        <graalvm.artifactId>graal-sdk</graalvm.artifactId>
+        <graalvm.version>22.3.1</graalvm.version>
+
         <native.maven.plugin.version>0.9.12</native.maven.plugin.version>
         <flatlafVersion>3.2</flatlafVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -103,7 +108,6 @@
                     </execution>
                 </executions>
             </plugin>
-
 
 
             <plugin>
@@ -278,12 +282,13 @@
                                     <outputDirectory>${project.build.directory}/dist/lib</outputDirectory>
                                     <artifactItems>
                                         <artifactItem>
-                                            <groupId>${groupId}</groupId>
-                                            <artifactId>${artifactId}</artifactId>
-                                            <version>${java.specification.version}</version>
-                                            <type>jar</type>
+                                            <groupId>${graalvm.groupId}</groupId>
+                                            <artifactId>${graalvm.groupId}</artifactId>
+                                            <version>${graalvm.version}</version> <!-- Adjust the version according to your local JDK -->
                                             <overWrite>false</overWrite>
-                                            <includes>fontconfig.bfc,fontconfig.properties.src,psfont.properties.ja,psfontj2d.properties</includes>
+                                            <includes>
+                                                fontconfig.bfc,fontconfig.properties.src,psfont.properties.ja,psfontj2d.properties
+                                            </includes>
                                         </artifactItem>
                                     </artifactItems>
                                 </configuration>
