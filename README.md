@@ -1,6 +1,6 @@
 # NiceYtDlpGui
 
-A graphical frontend for yt_dlp by [Lyjia](http://www.lyjia.us)
+A graphical frontend for [yt-dlp](https://github.com/yt-dlp/yt-dlp) by [Lyjia](http://www.lyjia.us)
 
 Built with GraalVM 20
 
