@@ -10,7 +10,7 @@ To build jars
  * Execute `java -jar NiceYtDlpGui-0.1-jar-with-dependencies.jar`
  * Do not try to run the jarfile directly or doubleclick it unless you have the correct JDK configured to handle this (uncommon)
 
-To build native-image executable:
+To build native-image executable (currently broken):
  * Make sure graalVM 20 (or greater) and Maven are installed
  * run `mvn -P native package`
  * Execute `NiceYtDlpGui` or `NiceYtDlpGui.exe` in `target`
@@ -20,6 +20,7 @@ To build native-image executable:
 ### native-image throws exception java.lang.Error: no ComponentUI class for: javax.swing.[...]
 
 * Solution unknown.
+* see https://github.com/lyjia/NiceYtDlpGui/issues/2
 
 ### native-image throws exception in thread "main" java.lang.Error: java.home property not set
 
