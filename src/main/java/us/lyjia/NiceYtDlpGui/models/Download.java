@@ -48,7 +48,7 @@ public class Download {
     this.ytDlp = ytdlp_instance;
 //    this.changeSupport = new PropertyChangeSupport(this);
     this.model = model;
-    this.id = ++serial;
+    this.id = serial++;
     
     log.info("Download " + id + " starting: going to save " + url + " to " + destFolder);
     
@@ -127,6 +127,7 @@ public class Download {
       progressStats.put(progressKeys[i], progressArr[i + 1]);
     }
     
+    // https://stackoverflow.com/questions/7904708/how-to-correctly-update-abstracttablemodel-with-firetabledatachanged
     this.model.fireTableRowsUpdated(this.id, this.id);
   }
 
