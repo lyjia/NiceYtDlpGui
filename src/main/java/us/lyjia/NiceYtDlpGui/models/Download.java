@@ -2,8 +2,10 @@ package us.lyjia.NiceYtDlpGui.models;
 
 import us.lyjia.NiceYtDlpGui.Const;
 import us.lyjia.NiceYtDlpGui.Util;
+import us.lyjia.NiceYtDlpGui.models.swing.DownloadsTableModel;
 
 import javax.swing.*;
+import javax.swing.table.TableModel;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.BufferedReader;
@@ -30,23 +32,25 @@ public class Download {
   private final File destFolder;
   private final YtDlp ytDlp;
   private final String[] progressKeys;
+  private DownloadsTableModel model;
   
   // download attributes
   public Status status = Status.Init;
   public LinkedHashMap<String, String> progressStats = new LinkedHashMap<>();
   
   // https://www.baeldung.com/java-observer-pattern
-  private PropertyChangeSupport changeSupport;
+//  private PropertyChangeSupport changeSupport;
   
   
-  public Download(YtDlp ytdlp_instance, URL url, File destFolder) {
+  public Download(YtDlp ytdlp_instance, URL url, File destFolder, DownloadsTableModel model) {
     this.url = url;
     this.destFolder = destFolder;
     this.ytDlp = ytdlp_instance;
-    this.changeSupport = new PropertyChangeSupport(this);
+//    this.changeSupport = new PropertyChangeSupport(this);
+    this.model = model;
     this.id = ++serial;
     
-    log.info("Download "+id+" starting: going to save "+url+" to "+destFolder);
+    log.info("Download " + id + " starting: going to save " + url + " to " + destFolder);
     
     progressKeys = YtDlp.getProgressTemplateKeys();
     for (var key : progressKeys) {
@@ -77,7 +81,8 @@ public class Download {
         Util.encloseWithQuotes(this.url.toString())
     };
     
-    log.fine("Download "+id+" about to spawn ytdlp with: " + String.join(" ", args));
+    log.fine("Download " + id + " about to spawn ytdlp with: " + String.join(" ", args));
+    this.model.fireTableRowsInserted(this.id, this.id);
     
     // spawn a new thread and run+monitor the ytdlp process from within it
     new Thread(() -> {
@@ -103,7 +108,7 @@ public class Download {
         int exitCode = process.waitFor();
         in.close();
         
-        log.info("Download "+id+" process exited with code " + exitCode);
+        log.info("Download " + id + " process exited with code " + exitCode);
         
       } catch (IOException e) {
         throw new RuntimeException(e);
@@ -119,15 +124,12 @@ public class Download {
     String[] progressArr = line.split(Const.Progress.TOKE_SEPERATOR);
     for (var i = 0; i < progressKeys.length; i++) {
       // +1 because the first token is the validation string
-      progressStats.put(progressKeys[i], progressArr[i+1]);
+      progressStats.put(progressKeys[i], progressArr[i + 1]);
     }
-    changeSupport.firePropertyChange("progressStats", null, null);
+    
+    this.model.fireTableRowsUpdated(this.id, this.id);
   }
-  
-  public void addChangeListener(PropertyChangeListener pcl) {
-    changeSupport.addPropertyChangeListener(pcl);
-  }
-  
+
   public String getProgressStat(String keyname) {
     return progressStats.get(keyname);
   }

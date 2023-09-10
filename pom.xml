@@ -284,7 +284,7 @@
                                         <artifactItem>
                                             <groupId>${graalvm.groupId}</groupId>
                                             <artifactId>${graalvm.groupId}</artifactId>
-                                            <version>${graalvm.version}</version> <!-- Adjust the version according to your local JDK -->
+                                            <version>${graalvm.version}</version>
                                             <overWrite>false</overWrite>
                                             <includes>
                                                 fontconfig.bfc,fontconfig.properties.src,psfont.properties.ja,psfontj2d.properties
