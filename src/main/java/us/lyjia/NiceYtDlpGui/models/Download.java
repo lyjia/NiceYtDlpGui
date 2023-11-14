@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public class Download {
@@ -124,10 +125,18 @@ public class Download {
   private void parseReadlineFromProcess(String line) {
     String[] progressArr = line.split(Const.Progress.TOKE_SEPERATOR);
     
-    if (progressArr[0] == Const.Progress.TOKE_HEADER) {
+    if (Objects.equals(progressArr[0], Const.Progress.TOKE_HEADER)) {
       for (var i = 0; i < progressKeys.length; i++) {
-        // +1 because the first token is the validation string
-        progressStats.put(progressKeys[i], progressArr[i + 1]);
+        // we read progressArr +1 because the first token is the validation string
+        
+        if (progressKeys[i] == Const.Progress.TOKE_PRG_BYTES_SPEED) {
+          progressStats.put(progressKeys[i], Util.getFriendlyByteSpeed(progressArr[i + 1]));
+        } else if (progressKeys[i] == Const.Progress.TOKE_PRG_BYTES_DOWNLOADED || progressKeys[i] == Const.Progress.TOKE_PRG_BYTES_TOTAL) {
+          progressStats.put(progressKeys[i], Util.getFriendlyBytes(progressArr[i + 1]));
+        } else {
+          progressStats.put(progressKeys[i], progressArr[i + 1]);
+        }
+        
       }
     } else {
       // something's wrong
@@ -138,7 +147,7 @@ public class Download {
     // https://stackoverflow.com/questions/7904708/how-to-correctly-update-abstracttablemodel-with-firetabledatachanged
     this.model.fireTableRowsUpdated(this.id, this.id);
   }
-
+  
   public String getProgressStat(String keyname) {
     return progressStats.get(keyname);
   }
