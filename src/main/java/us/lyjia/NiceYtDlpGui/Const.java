@@ -33,4 +33,8 @@ public class Const {
     public static final String TOKE_PRG_BYTES_SPEED = "progSpeed";
   }
   
+  public class Status {
+    public static final String ERROR = "ERROR";
+  }
+  
 }

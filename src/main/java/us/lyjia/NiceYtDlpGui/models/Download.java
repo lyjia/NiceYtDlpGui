@@ -99,6 +99,7 @@ public class Download {
         
         while ((line = in.readLine()) != null) {
           String finalLine = line;
+          //log.info(finalLine);
           SwingUtilities.invokeLater(() -> {
             parseReadlineFromProcess(finalLine);
           });
@@ -122,9 +123,16 @@ public class Download {
   
   private void parseReadlineFromProcess(String line) {
     String[] progressArr = line.split(Const.Progress.TOKE_SEPERATOR);
-    for (var i = 0; i < progressKeys.length; i++) {
-      // +1 because the first token is the validation string
-      progressStats.put(progressKeys[i], progressArr[i + 1]);
+    
+    if (progressArr[0] == Const.Progress.TOKE_HEADER) {
+      for (var i = 0; i < progressKeys.length; i++) {
+        // +1 because the first token is the validation string
+        progressStats.put(progressKeys[i], progressArr[i + 1]);
+      }
+    } else {
+      // something's wrong
+      progressStats.put(Const.Progress.TOKE_PRG_STATUS, Const.Status.ERROR);
+      progressStats.put(Const.Progress.TOKE_INFO_TITLE, line);
     }
     
     // https://stackoverflow.com/questions/7904708/how-to-correctly-update-abstracttablemodel-with-firetabledatachanged
