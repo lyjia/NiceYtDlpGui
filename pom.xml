@@ -6,7 +6,6 @@
 
     <groupId>us.lyjia</groupId>
     <artifactId>NiceYtDlpGui</artifactId>
-    <version>0.1</version>
 
     <properties>
         <maven.compiler.source>${java.specification.version}</maven.compiler.source>
@@ -21,6 +20,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <imageName>NiceYtDlpGui</imageName>
         <mainClass>us.lyjia.NiceYtDlpGui.Main</mainClass>
+        <project.version>0.1</project.version>
     </properties>
 
     <dependencies>
@@ -63,13 +63,6 @@
             <groupId>com.miglayout</groupId>
             <version>5.1</version>
         </dependency>
-
-        <!-- async/await -->
-        <!--        <dependency>-->
-        <!--            <groupId>com.ea.async</groupId>-->
-        <!--            <artifactId>ea-async</artifactId>-->
-        <!--            <version>1.2.3</version>-->
-        <!--        </dependency>-->
 
     </dependencies>
 
@@ -157,16 +150,6 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jlink-plugin</artifactId>
-                <version>3.1.0</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <!-- configuration elements goes here -->
-                </configuration>
-            </plugin>
-
         </plugins>
     </build>
 
@@ -185,7 +168,7 @@
                             <execution>
                                 <id>build-native</id>
                                 <goals>
-                                    <goal>compile</goal>
+                                    <goal>compile-no-fork</goal>
                                 </goals>
                                 <phase>package</phase>
                             </execution>
@@ -199,7 +182,7 @@
                         </executions>
                         <configuration>
                             <skipNativeTests>true</skipNativeTests>
-                            <imageName>NiceYtDlpGui-${version}</imageName>
+                            <imageName>NiceYtDlpGui-${project.version}</imageName>
                         </configuration>
                     </plugin>
                 </plugins>
