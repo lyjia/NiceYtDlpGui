@@ -1,0 +1,8 @@
+# options for jpackage
+--input target/
+--name NiceYtDlpGui
+--main-jar NiceYtDlpGui-0.1.jar
+--main-class us.lyjia.NiceYtDlpGui.Main
+--type app-image
+--temp temp/
+--dest target/jpackage/

@@ -1,0 +1,7 @@
+# options for jlink
+--output target/jlink
+--launcher NiceYtDlpGui=us.lyjia.NiceYtDlpGui
+# optimizations
+--strip-debug
+--no-header-files
+--no-man-pages
