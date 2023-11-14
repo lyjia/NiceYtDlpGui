@@ -176,8 +176,6 @@
             <id>native</id>
             <build>
                 <plugins>
-
-                    <!-- graalvm build tools -->
                     <plugin>
                         <groupId>org.graalvm.buildtools</groupId>
                         <artifactId>native-maven-plugin</artifactId>
@@ -187,7 +185,7 @@
                             <execution>
                                 <id>build-native</id>
                                 <goals>
-                                    <goal>build</goal>
+                                    <goal>compile</goal>
                                 </goals>
                                 <phase>package</phase>
                             </execution>
@@ -200,103 +198,10 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <imageName>NiceYtDlpGui</imageName>
-                            <verbose>true</verbose>
+                            <skipNativeTests>true</skipNativeTests>
+                            <imageName>NiceYtDlpGui-${version}</imageName>
                         </configuration>
                     </plugin>
-
-                    <!-- something about using the application agent in a mojo execution? -->
-                    <!-- idunno its what the tutorial said to do -->
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>3.0.0</version>
-                        <executions>
-                            <execution>
-                                <id>java-agent</id>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>java</executable>
-                                    <workingDirectory>${project.build.directory}</workingDirectory>
-                                    <arguments>
-                                        <argument>-classpath</argument>
-                                        <classpath/>
-                                        <argument>${mainClass}</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>native</id>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>${project.build.directory}/${imageName}</executable>
-                                    <workingDirectory>${project.build.directory}</workingDirectory>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <!-- possible fix for native-image java.home issue (https://github.com/lyjia/NiceYtDlpGui/issues/1), we will copy in needed deps and set java.home to . -->
-                    <!-- https://chat.openai.com/share/6e1db102-7bb8-4dd5-999c-5d98b4bff8c0 -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-resources-plugin</artifactId>
-                        <version>3.2.0</version>
-                        <executions>
-                            <execution>
-                                <id>copy-native</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>copy-resources</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${project.build.directory}/dist</outputDirectory>
-                                    <resources>
-                                        <resource>
-                                            <directory>${project.build.directory}/native/nativeCompile</directory>
-                                            <includes>
-                                                <include>*.exe</include>
-                                                <include>*.dll</include>
-                                            </includes>
-                                        </resource>
-                                    </resources>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>3.2.0</version>
-                        <executions>
-                            <execution>
-                                <id>copy-runtime-files</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>copy</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${project.build.directory}/dist/lib</outputDirectory>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>${graalvm.groupId}</groupId>
-                                            <artifactId>${graalvm.groupId}</artifactId>
-                                            <version>${graalvm.version}</version>
-                                            <overWrite>false</overWrite>
-                                            <includes>
-                                                fontconfig.bfc,fontconfig.properties.src,psfont.properties.ja,psfontj2d.properties
-                                            </includes>
-                                        </artifactItem>
-                                    </artifactItems>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-
                 </plugins>
             </build>
         </profile>
