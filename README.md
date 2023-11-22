@@ -2,7 +2,7 @@
 
 A graphical frontend for [yt-dlp](https://github.com/yt-dlp/yt-dlp) by [Lyjia](http://www.lyjia.us)
 
-Built with GraalVM 20
+Built with JDK 21
 
 To build jars
  * Make sure JDK 20 (or greater) and Maven are installed and in %PATH%
