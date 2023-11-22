@@ -17,9 +17,9 @@
         <maven.compiler.target>${java.specification.version}</maven.compiler.target>
         <native.maven.plugin.version>0.9.28</native.maven.plugin.version>
 
-        <graalvm.groupId>org.graalvm.sdk</graalvm.groupId>
-        <graalvm.artifactId>graal-sdk</graalvm.artifactId>
-        <graalvm.version>22.3.1</graalvm.version>
+<!--        <graalvm.groupId>org.graalvm.sdk</graalvm.groupId>-->
+<!--        <graalvm.artifactId>graal-sdk</graalvm.artifactId>-->
+<!--        <graalvm.version>22.3.1</graalvm.version>-->
 
         <flatlafVersion>3.2</flatlafVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -65,6 +65,14 @@
             <groupId>com.miglayout</groupId>
             <version>5.1</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.swinglabs.swingx/swingx-all -->
+        <dependency>
+            <groupId>org.swinglabs.swingx</groupId>
+            <artifactId>swingx-all</artifactId>
+            <version>1.6.5-1</version>
+        </dependency>
+
 
     </dependencies>
 
@@ -168,6 +176,13 @@
                         <configuration>
                             <skipNativeTests>true</skipNativeTests>
                             <imageName>NiceYtDlpGui-${project.version}</imageName>
+                            <jvmArgs>
+                                <arg>--add-exports=jdk.internal.vm.compiler/org.graalvm.compiler.options=ALL-UNNAMED</arg> <!-- https://github.com/oracle/graal/issues/7248 -->
+                                <arg>--add-exports=org.graalvm.polyglot/org.graalvm.polyglot.impl=ALL-UNNAMED</arg> <!-- https://github.com/oracle/graal/issues/2597 -->
+                            </jvmArgs>
+                            <environment>
+                                <USE_NATIVE_IMAGE_JAVA_PLATFORM_MODULE_SYSTEM>false</USE_NATIVE_IMAGE_JAVA_PLATFORM_MODULE_SYSTEM> <!-- https://github.com/oracle/graal/issues/7248 -->
+                            </environment>
                         </configuration>
                     </plugin>
                 </plugins>
