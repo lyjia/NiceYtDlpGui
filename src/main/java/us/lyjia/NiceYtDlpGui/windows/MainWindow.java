@@ -29,6 +29,7 @@ public class MainWindow {
   JTextField txtDest;
   JTextField txtUrl;
   JTable tblDownloads;
+  DownloadsTableModel tblDownloadsModel;
   
   
   public MainWindow() {
@@ -118,7 +119,8 @@ public class MainWindow {
     
     // Downloads table
     // https://docs.oracle.com/javase/tutorial/uiswing/components/table.html
-    tblDownloads = new JTable(new DownloadsTableModel(Download.getDownloadPile()));
+    tblDownloadsModel= new DownloadsTableModel(Download.getDownloadPile());
+    tblDownloads = new JTable( tblDownloadsModel );
     JScrollPane scrlDownloads = new JScrollPane(tblDownloads);
     tblDownloads.setFillsViewportHeight(true);
     
@@ -152,9 +154,7 @@ public class MainWindow {
       // create download object
       URL url = new URL( urlStr );
       File destFolder = new File( destStr );
-      var download = ytdlp.getDownloadObj(url, destFolder);
-      
-      // set up progress monitoring
+      var download = ytdlp.getDownloadObj(url, destFolder, tblDownloadsModel);
       
       // start the download
       Download.addDownloadToPileAndStart(download);

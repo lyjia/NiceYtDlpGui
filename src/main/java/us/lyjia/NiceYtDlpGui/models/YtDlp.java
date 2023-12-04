@@ -17,6 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import us.lyjia.NiceYtDlpGui.Util;
+import us.lyjia.NiceYtDlpGui.models.swing.DownloadsTableModel;
 
 import javax.swing.*;
 
@@ -83,8 +84,8 @@ public class YtDlp {
         String.join(Const.Progress.TOKE_SEPERATOR, downloadProgressTemplateMap.values()));
   }
   
-  public Download getDownloadObj(URL url, File destFolder) {
-    return new Download(this, url, destFolder);
+  public Download getDownloadObj(URL url, File destFolder, DownloadsTableModel model) {
+    return new Download(this, url, destFolder, model);
   }
   
   

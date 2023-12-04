@@ -2,8 +2,10 @@ package us.lyjia.NiceYtDlpGui.models;
 
 import us.lyjia.NiceYtDlpGui.Const;
 import us.lyjia.NiceYtDlpGui.Util;
+import us.lyjia.NiceYtDlpGui.models.swing.DownloadsTableModel;
 
 import javax.swing.*;
+import javax.swing.table.TableModel;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.BufferedReader;
@@ -13,6 +15,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public class Download {
@@ -30,23 +33,25 @@ public class Download {
   private final File destFolder;
   private final YtDlp ytDlp;
   private final String[] progressKeys;
+  private DownloadsTableModel model;
   
   // download attributes
   public Status status = Status.Init;
   public LinkedHashMap<String, String> progressStats = new LinkedHashMap<>();
   
   // https://www.baeldung.com/java-observer-pattern
-  private PropertyChangeSupport changeSupport;
+//  private PropertyChangeSupport changeSupport;
   
   
-  public Download(YtDlp ytdlp_instance, URL url, File destFolder) {
+  public Download(YtDlp ytdlp_instance, URL url, File destFolder, DownloadsTableModel model) {
     this.url = url;
     this.destFolder = destFolder;
     this.ytDlp = ytdlp_instance;
-    this.changeSupport = new PropertyChangeSupport(this);
-    this.id = ++serial;
+//    this.changeSupport = new PropertyChangeSupport(this);
+    this.model = model;
+    this.id = serial++;
     
-    log.info("Download "+id+" starting: going to save "+url+" to "+destFolder);
+    log.info("Download " + id + " starting: going to save " + url + " to " + destFolder);
     
     progressKeys = YtDlp.getProgressTemplateKeys();
     for (var key : progressKeys) {
@@ -77,7 +82,8 @@ public class Download {
         Util.encloseWithQuotes(this.url.toString())
     };
     
-    log.fine("Download "+id+" about to spawn ytdlp with: " + String.join(" ", args));
+    log.fine("Download " + id + " about to spawn ytdlp with: " + String.join(" ", args));
+    this.model.fireTableRowsInserted(this.id, this.id);
     
     // spawn a new thread and run+monitor the ytdlp process from within it
     new Thread(() -> {
@@ -94,6 +100,7 @@ public class Download {
         
         while ((line = in.readLine()) != null) {
           String finalLine = line;
+          //log.info(finalLine);
           SwingUtilities.invokeLater(() -> {
             parseReadlineFromProcess(finalLine);
           });
@@ -103,7 +110,7 @@ public class Download {
         int exitCode = process.waitFor();
         in.close();
         
-        log.info("Download "+id+" process exited with code " + exitCode);
+        log.info("Download " + id + " process exited with code " + exitCode);
         
       } catch (IOException e) {
         throw new RuntimeException(e);
@@ -117,15 +124,28 @@ public class Download {
   
   private void parseReadlineFromProcess(String line) {
     String[] progressArr = line.split(Const.Progress.TOKE_SEPERATOR);
-    for (var i = 0; i < progressKeys.length; i++) {
-      // +1 because the first token is the validation string
-      progressStats.put(progressKeys[i], progressArr[i+1]);
+    
+    if (Objects.equals(progressArr[0], Const.Progress.TOKE_HEADER)) {
+      for (var i = 0; i < progressKeys.length; i++) {
+        // we read progressArr +1 because the first token is the validation string
+        
+        if (progressKeys[i] == Const.Progress.TOKE_PRG_BYTES_SPEED) {
+          progressStats.put(progressKeys[i], Util.getFriendlyByteSpeed(progressArr[i + 1]));
+        } else if (progressKeys[i] == Const.Progress.TOKE_PRG_BYTES_DOWNLOADED || progressKeys[i] == Const.Progress.TOKE_PRG_BYTES_TOTAL) {
+          progressStats.put(progressKeys[i], Util.getFriendlyBytes(progressArr[i + 1]));
+        } else {
+          progressStats.put(progressKeys[i], progressArr[i + 1]);
+        }
+        
+      }
+    } else {
+      // something's wrong
+      progressStats.put(Const.Progress.TOKE_PRG_STATUS, Const.Status.ERROR);
+      progressStats.put(Const.Progress.TOKE_INFO_TITLE, line);
     }
-    changeSupport.firePropertyChange("progressStats", null, null);
-  }
-  
-  public void addChangeListener(PropertyChangeListener pcl) {
-    changeSupport.addPropertyChangeListener(pcl);
+    
+    // https://stackoverflow.com/questions/7904708/how-to-correctly-update-abstracttablemodel-with-firetabledatachanged
+    this.model.fireTableRowsUpdated(this.id, this.id);
   }
   
   public String getProgressStat(String keyname) {

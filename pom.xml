@@ -9,18 +9,20 @@
     <version>0.1</version>
 
     <properties>
-        <maven.compiler.source>${java.specification.version}</maven.compiler.source>
-        <maven.compiler.target>${java.specification.version}</maven.compiler.target>
-
-        <graalvm.groupId>org.graalvm.sdk</graalvm.groupId>
-        <graalvm.artifactId>graal-sdk</graalvm.artifactId>
-        <graalvm.version>22.3.1</graalvm.version>
-
-        <native.maven.plugin.version>0.9.12</native.maven.plugin.version>
-        <flatlafVersion>3.2</flatlafVersion>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <imageName>NiceYtDlpGui</imageName>
         <mainClass>us.lyjia.NiceYtDlpGui.Main</mainClass>
+        <project.version>${version}</project.version>
+
+        <maven.compiler.source>${java.specification.version}</maven.compiler.source>
+        <maven.compiler.target>${java.specification.version}</maven.compiler.target>
+        <native.maven.plugin.version>0.9.28</native.maven.plugin.version>
+
+<!--        <graalvm.groupId>org.graalvm.sdk</graalvm.groupId>-->
+<!--        <graalvm.artifactId>graal-sdk</graalvm.artifactId>-->
+<!--        <graalvm.version>22.3.1</graalvm.version>-->
+
+        <flatlafVersion>3.2</flatlafVersion>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
@@ -52,11 +54,11 @@
             <version>${flatlafVersion}</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.formdev</groupId>
-            <artifactId>flatlaf-swingx</artifactId>
-            <version>${flatlafVersion}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.formdev</groupId>-->
+<!--            <artifactId>flatlaf-swingx</artifactId>-->
+<!--            <version>${flatlafVersion}</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <artifactId>miglayout-swing</artifactId>
@@ -64,51 +66,34 @@
             <version>5.1</version>
         </dependency>
 
-        <!-- async/await -->
-        <!--        <dependency>-->
-        <!--            <groupId>com.ea.async</groupId>-->
-        <!--            <artifactId>ea-async</artifactId>-->
-        <!--            <version>1.2.3</version>-->
-        <!--        </dependency>-->
+        <!-- https://mvnrepository.com/artifact/org.swinglabs.swingx/swingx-all -->
+<!--        <dependency>-->
+<!--            <groupId>org.swinglabs.swingx</groupId>-->
+<!--            <artifactId>swingx-all</artifactId>-->
+<!--            <version>1.6.5-1</version>-->
+<!--        </dependency>-->
+
 
     </dependencies>
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.0.0</version>
                 <executions>
                     <execution>
-                        <id>java-agent</id>
+                        <id>java</id>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>java</goal>
                         </goals>
                         <configuration>
-                            <executable>java</executable>
-                            <workingDirectory>${project.build.directory}</workingDirectory>
-                            <arguments>
-                                <argument>-classpath</argument>
-                                <classpath/>
-                                <argument>${mainClass}</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>native</id>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>${project.build.directory}/${imageName}</executable>
-                            <workingDirectory>${project.build.directory}</workingDirectory>
+                            <mainClass>${mainClass}</mainClass>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -167,8 +152,6 @@
             <id>native</id>
             <build>
                 <plugins>
-
-                    <!-- graalvm build tools -->
                     <plugin>
                         <groupId>org.graalvm.buildtools</groupId>
                         <artifactId>native-maven-plugin</artifactId>
@@ -178,7 +161,7 @@
                             <execution>
                                 <id>build-native</id>
                                 <goals>
-                                    <goal>build</goal>
+                                    <goal>compile-no-fork</goal>
                                 </goals>
                                 <phase>package</phase>
                             </execution>
@@ -191,111 +174,17 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <fallback>false</fallback>
-                            <buildArgs>
-                                <arg>-H:DashboardDump=NiceYtDlpGui -H:+DashboardAll</arg>
-                            </buildArgs>
-                            <agent>
-                                <enabled>true</enabled>
-                                <options>
-                                    <option>experimental-class-loader-support</option>
-                                </options>
-                            </agent>
+                            <skipNativeTests>true</skipNativeTests>
+                            <imageName>NiceYtDlpGui-${project.version}</imageName>
+                            <jvmArgs>
+                                <arg>--add-exports=jdk.internal.vm.compiler/org.graalvm.compiler.options=ALL-UNNAMED</arg> <!-- https://github.com/oracle/graal/issues/7248 -->
+                                <arg>--add-exports=org.graalvm.polyglot/org.graalvm.polyglot.impl=ALL-UNNAMED</arg> <!-- https://github.com/oracle/graal/issues/2597 -->
+                            </jvmArgs>
+                            <environment>
+                                <USE_NATIVE_IMAGE_JAVA_PLATFORM_MODULE_SYSTEM>false</USE_NATIVE_IMAGE_JAVA_PLATFORM_MODULE_SYSTEM> <!-- https://github.com/oracle/graal/issues/7248 -->
+                            </environment>
                         </configuration>
                     </plugin>
-
-                    <!-- something about using the application agent in a mojo execution? -->
-                    <!-- idunno its what the tutorial said to do -->
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>3.0.0</version>
-                        <executions>
-                            <execution>
-                                <id>java-agent</id>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>java</executable>
-                                    <workingDirectory>${project.build.directory}</workingDirectory>
-                                    <arguments>
-                                        <argument>-classpath</argument>
-                                        <classpath/>
-                                        <argument>${mainClass}</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>native</id>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>${project.build.directory}/${imageName}</executable>
-                                    <workingDirectory>${project.build.directory}</workingDirectory>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <!-- possible fix for native-image java.home issue (https://github.com/lyjia/NiceYtDlpGui/issues/1), we will copy in needed deps and set java.home to . -->
-                    <!-- https://chat.openai.com/share/6e1db102-7bb8-4dd5-999c-5d98b4bff8c0 -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-resources-plugin</artifactId>
-                        <version>3.2.0</version>
-                        <executions>
-                            <execution>
-                                <id>copy-native</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>copy-resources</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${project.build.directory}/dist</outputDirectory>
-                                    <resources>
-                                        <resource>
-                                            <directory>${project.build.directory}/native/nativeCompile</directory>
-                                            <includes>
-                                                <include>*.exe</include>
-                                                <include>*.dll</include>
-                                            </includes>
-                                        </resource>
-                                    </resources>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>3.2.0</version>
-                        <executions>
-                            <execution>
-                                <id>copy-runtime-files</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>copy</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${project.build.directory}/dist/lib</outputDirectory>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>${graalvm.groupId}</groupId>
-                                            <artifactId>${graalvm.groupId}</artifactId>
-                                            <version>${graalvm.version}</version> <!-- Adjust the version according to your local JDK -->
-                                            <overWrite>false</overWrite>
-                                            <includes>
-                                                fontconfig.bfc,fontconfig.properties.src,psfont.properties.ja,psfontj2d.properties
-                                            </includes>
-                                        </artifactItem>
-                                    </artifactItems>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-
                 </plugins>
             </build>
         </profile>
