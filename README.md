@@ -2,10 +2,10 @@
 
 A graphical frontend for yt_dlp by [Lyjia](http://www.lyjia.us)
 
-Built with GraalVM 20
+Built with JDK 21 (currently Temurin)
 
 To build jars
- * Make sure JDK 20 (or greater) and Maven are installed and in %PATH%
+ * Make sure JDK 21 (or greater) and Maven are installed and in %PATH%
  * run `mvn package`
  * Execute `java -jar NiceYtDlpGui-0.1-jar-with-dependencies.jar`
  * Do not try to run the jarfile directly or doubleclick it unless you have the correct JDK configured to handle this (uncommon)
