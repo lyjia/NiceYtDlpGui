@@ -11,7 +11,7 @@ To build jars
  * Do not try to run the jarfile directly or doubleclick it unless you have the correct JDK configured to handle this (uncommon)
 
 To build native-image executable (currently broken):
- * Make sure JDK 21 (or greater) and Maven are installed
+ * Make sure GraalVM 21 (or greater) and Maven are installed
  * run `mvn -P native package`
  * Execute `NiceYtDlpGui` or `NiceYtDlpGui.exe` in `target`
 
