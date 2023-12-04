@@ -2,7 +2,7 @@
 
 A graphical frontend for yt_dlp by [Lyjia](http://www.lyjia.us)
 
-Built with JDK 21 (currently Temurin)
+Built with JDK 21 (currently Temurin). This project was originally built to be compiled to a native binary with GraalVM, however native-image support for Swing applications is currently lacking and I have not been able to get such a build to work. (See below)
 
 To build jars
  * Make sure JDK 21 (or greater) and Maven are installed and in %PATH%
