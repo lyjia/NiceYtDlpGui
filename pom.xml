@@ -54,11 +54,11 @@
             <version>${flatlafVersion}</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.formdev</groupId>
-            <artifactId>flatlaf-swingx</artifactId>
-            <version>${flatlafVersion}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.formdev</groupId>-->
+<!--            <artifactId>flatlaf-swingx</artifactId>-->
+<!--            <version>${flatlafVersion}</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <artifactId>miglayout-swing</artifactId>
@@ -67,11 +67,11 @@
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.swinglabs.swingx/swingx-all -->
-        <dependency>
-            <groupId>org.swinglabs.swingx</groupId>
-            <artifactId>swingx-all</artifactId>
-            <version>1.6.5-1</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.swinglabs.swingx</groupId>-->
+<!--            <artifactId>swingx-all</artifactId>-->
+<!--            <version>1.6.5-1</version>-->
+<!--        </dependency>-->
 
 
     </dependencies>
