@@ -4,7 +4,15 @@ A graphical frontend for [yt-dlp](https://github.com/yt-dlp/yt-dlp) by [Lyjia](h
 
 Built with JDK 21 (currently Temurin). This project was originally built to be compiled to a native binary with GraalVM, however native-image support for Swing applications is currently lacking and I have not been able to get such a build to work. (See below)
 
-Note that this project is a *WORK IN PROGRESS*.
+**NOTE**: Note that this project is a *WORK IN PROGRESS*. 
+
+## Setup
+
+You will need a copy of yt-dlp downloaded to the path of your choice. It can be acquired [here](https://github.com/yt-dlp/yt-dlp/releases/latest). 
+
+**In NiceYtDlpGui, the path to yt-dlp is currently hard-coded**, so you will need to edit the value of `YTDLP_PATH_DEFAULT` in `Const.java` to be the full path to your yt-dlp binary. This will be updated when a configuration interface is added.
+
+## Building
 
 To build jars
  * Make sure JDK 21 (or greater) and Maven are installed and in %PATH%
